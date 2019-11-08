@@ -5,6 +5,7 @@
 int angle = 90;
 int speed = 35;
 int delay_time = 200;
+int back_delay_time = 200;
 char ssid[] = "Little";
 char pass[] = "XiaoMing";
 Servo servo;
@@ -48,14 +49,14 @@ void open() {
   servo.write(angle + speed);
   delay(delay_time);
   servo.write(angle - speed);
-  delay(delay_time);
+  delay(back_delay_time);
   servo.write(angle);
 }
 void close() {
   servo.write(angle - speed);
   delay(delay_time);
   servo.write(angle + speed);
-  delay(delay_time);
+  delay(back_delay_time);
   servo.write(angle);
 }
 void init_basic() {
@@ -67,7 +68,7 @@ void init_wifi() {
   {
     //Serial.println("Connect to wifi");
     WiFi.begin(ssid, pass);
-    delay(6000);
+    delay(5000);
   }
   WiFi.setAutoConnect(true);
   WiFi.setAutoReconnect(true);
@@ -89,6 +90,7 @@ void init_server() {
 
 
 void handleRoot() {
+  server.sendHeader("Access-Control-Allow-Origin","*");
   server.send(200, "text/plain", "This is a web for 531's Light");
   Led();
 }
@@ -98,6 +100,7 @@ void handleOpen() {
   //Serial.println("open");
 
   open();
+  server.sendHeader("Access-Control-Allow-Origin","*");
   server.send(200, "text/plain", "Light is open");
   Led();
 
@@ -105,11 +108,9 @@ void handleOpen() {
 void handleClose() {
   //Serial.println("close");
   close();
+  server.sendHeader("Access-Control-Allow-Origin","*");
   server.send(200, "text/plain", "Light is close");
   Led();
-  
-
-  
 }
 void handleSetting() {
   String message;
@@ -119,18 +120,23 @@ void handleSetting() {
     if (server.argName(i).equals("speed")) {
       speed = server.arg(i).toInt();
     }
-    else if (server.argName(i).equals("speed")) {
+    else if (server.argName(i).equals("delay")) {
       delay_time = server.arg(i).toInt();
     }
+    else if(server.argName(i).equals("delay_back")){
+      back_delay_time = server.arg(i).toInt();
+      }
     else {}
   }
 
   //Serial.println(message);
+  server.sendHeader("Access-Control-Allow-Origin","*");
   server.send(200, "text/plain", message);
     Led();
   Led();
 }
 void handleNotFound() {
+  server.sendHeader("Access-Control-Allow-Origin","*");
   server.send(200, "text/plain", "404");
 }
 

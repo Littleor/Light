@@ -64,16 +64,16 @@ void init_basic() {
   //Serial.println("\n Now start");
 }
 void init_wifi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.config(ip,gateway,subnet);
+  WiFi.setAutoConnect(true);
+  WiFi.setAutoReconnect(true);
   while (WiFi.status() != WL_CONNECTED)
   {
     //Serial.println("Connect to wifi");
     WiFi.begin(ssid, pass);
     delay(5000);
   }
-  WiFi.setAutoConnect(true);
-  WiFi.setAutoReconnect(true);
-  //Serial.println("\n Now is ok,and status is:");
-  //Serial.println(WiFi.localIP());
 }
 void init_servo() {
   servo.attach(2);
@@ -91,13 +91,12 @@ void init_server() {
 
 void handleRoot() {
   server.sendHeader("Access-Control-Allow-Origin","*");
-  server.send(200, "text/plain", "This is a web for 531's Light");
+  server.send(200, "text/plain", "The service of web is ok");
   Led();
 }
 
 void handleOpen() {
 
-  //Serial.println("open");
 
   open();
   server.sendHeader("Access-Control-Allow-Origin","*");
@@ -129,7 +128,6 @@ void handleSetting() {
     else {}
   }
 
-  //Serial.println(message);
   server.sendHeader("Access-Control-Allow-Origin","*");
   server.send(200, "text/plain", message);
     Led();

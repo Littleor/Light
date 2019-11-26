@@ -6,8 +6,8 @@ int angle = 90;
 int speed = 90;
 int delay_time = 200;
 int back_delay_time = 200;
-char ssid[] = "Little";
-char pass[] = "XiaoMing";
+char ssid[] = "ssid";
+char pass[] = "pass";
 Servo servo;
 ESP8266WebServer server(80);
 
